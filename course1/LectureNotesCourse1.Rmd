@@ -1,0 +1,60 @@
+---
+title: "LectureNotesCourse1: Machine Learning Foundations: A Case Study Approach"
+author: "Yang Ge"
+date: "September 29, 2015"
+output: 
+  html_document:
+    keep_md: true
+---
+
+# Week1
+
+## Getting started with Python and the IPython Notebook
+
+To install ipython note book on my Ubuntu 15.04, I followed link 
+[here](http://askubuntu.com/questions/554129/problem-with-installing-ipython-on-ubuntu-14-04-lts)
+and discussion forum thread "Hints to install Ipython notebook on Ubuntu 14.04"
+[here](https://www.coursera.org/learn/ml-foundations/module/jw04R/discussions/0NmDpWOZEeWNhRIQkbjhXw)
+
+```bash
+$ sudo apt-get install ipython ipython-notebook
+# If you want to use python 3, I guess you could do
+# sudo apt-get install ipython3 ipython3-notebook
+
+# I also need to do this step:
+$ sudo easy_install jsonschema
+
+# To start it
+$ ipython notebook
+```
+
+Python plus wiki pages is **_IPython notebook_**.
+
+* To create new notebook, click "New" -> "Python 2".
+* To change the cell from "code" to "markdown", click "Cell" -> "Celltype" -> "Markdown".
+* To run the current code block: "Ctrl"+"Enter". To run and create new: "SHIFT"+"Enter".
+
+According to a recent survey "python is the language for data science".
+
+## Getting started with GraphLab Create
+
+To install the GraphLab Create in my Ubuntu 15.04:
+
+```base
+# Install the virtualenv
+$ sudo apt-get install python-virtualenv
+
+# Create a virtual environment named e.g. dato-env
+$ virtualenv dato-env
+
+# Activate the virtual environment
+$ source dato-env/bin/activate
+
+# Make sure pip is up to date
+$ pip install --upgrade pip
+
+# Install your licensed copy of GraphLab Create
+pip install --upgrade --no-cache-dir https://get.dato.com/GraphLab-Create/1.6.1/<email>/<product_key>/GraphLab-Create-License.tar.gz
+```
+
+
