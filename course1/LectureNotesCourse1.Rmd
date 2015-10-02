@@ -79,3 +79,9 @@ sf['age'].mean()
 sf['Full Name'] = sf['First Name'] + sf['Last Name']
 sf['age'] * sf['age']
 ```
+
+**Using .apply() for data transformation**
+
+```python
+sf['Country'].apply(transform_country)
+```
