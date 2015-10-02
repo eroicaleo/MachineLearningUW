@@ -2,7 +2,7 @@
 title: "LectureNotesCourse1: Machine Learning Foundations: A Case Study Approach"
 author: "Yang Ge"
 date: "September 29, 2015"
-output: 
+output:
   html_document:
     keep_md: true
 ---
@@ -11,7 +11,7 @@ output:
 
 ## Getting started with Python and the IPython Notebook
 
-To install ipython note book on my Ubuntu 15.04, I followed link 
+To install ipython note book on my Ubuntu 15.04, I followed link
 [here](http://askubuntu.com/questions/554129/problem-with-installing-ipython-on-ubuntu-14-04-lts)
 and discussion forum thread "Hints to install Ipython notebook on Ubuntu 14.04"
 [here](https://www.coursera.org/learn/ml-foundations/module/jw04R/discussions/0NmDpWOZEeWNhRIQkbjhXw)
@@ -32,6 +32,7 @@ Python plus wiki pages is **_IPython notebook_**.
 
 * To create new notebook, click "New" -> "Python 2".
 * To change the cell from "code" to "markdown", click "Cell" -> "Celltype" -> "Markdown".
+Or use the hotkey `ctrl-m m`
 * To run the current code block: "Ctrl"+"Enter". To run and create new: "SHIFT"+"Enter".
 
 According to a recent survey "python is the language for data science".
@@ -57,4 +58,24 @@ $ pip install --upgrade pip
 pip install --upgrade --no-cache-dir https://get.dato.com/GraphLab-Create/1.6.1/<email>/<product_key>/GraphLab-Create-License.tar.gz
 ```
 
+But eventually, I give up because it can only be installed on 64-bit machine.
 
+**Basic command**
+
+`sf.head()`, `sf.tail()`
+
+Canvas command: `sf.show()` is mad cool!
+
+It opens in new tab in the browser, we can also do this:
+```python
+graphlab.canvas.set_target('ipynb')
+sf['age'].show(view='Categorical')
+```
+
+**Interacting with columns in SFrame**
+```python
+sf['Country']
+sf['age'].mean()
+sf['Full Name'] = sf['First Name'] + sf['Last Name']
+sf['age'] * sf['age']
+```
