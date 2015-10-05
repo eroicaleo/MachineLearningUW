@@ -5,6 +5,7 @@ date: "September 29, 2015"
 output:
   html_document:
     keep_md: true
+    toc: true
 ---
 
 # Week1
@@ -85,3 +86,36 @@ sf['age'] * sf['age']
 ```python
 sf['Country'].apply(transform_country)
 ```
+
+# Week 2
+
+Predict house price by similar houses.
+The problem is that we throw out the info of all other houses.
+We would like to leverage all the information we can to come up with good
+predictions.
+
+## Linear regression modeling
+
+$$
+f(x) = w_0 + w_1 x
+$$
+
+$w_0$ is intercept and $w_1$ is slope.
+Redidual sum of squares (*RSS*).
+Best model is called $\hat{w} = (\hat{w_0}, \hat{w_1})$
+
+## Adding higer order effects
+
+$$
+f(x) = w_0 + w_1 x + w_2 x^2
+$$
+
+If we go higer, like 13 order, we might overfit the data.
+
+## Evaluating regression models
+
+We want a model generalized well for new data.
+
+pipeline:
+
+Training data -> feature extraction -> ML model
