@@ -119,3 +119,34 @@ We want a model generalized well for new data.
 pipeline:
 
 Training data -> feature extraction -> ML model
+
+# Week 3 Classification modeling
+
+Input is sentence from review, it goes to "classifier model", output is predicted class.
+output $y$ can have more than 2 categories.
+
+* Resteraut review
+* Another example is spam filtering, input is "text of email, IP, sender"
+* Image classification, different kinds of dogs.
+* Personalized medical diagnosis
+* Reading mind, take a image of brain
+
+## Linear classifier
+
+* Simple threshold classifier: Count positive and negative word in a sentence.
+* Limitation:
+    * how do we get list of +/- words?
+    * Words have different degree of sentiments.
+    * single words are not enough: good and not good.
+    
+* A linear classifier will learn a weight for each word.
+
+**simple linear classifier**
+
+score(x) = Weighted count of words in sentence.
+if score(x) > 0, then positive. Otherwise negative.
+
+**Decision boundaries**
+
+## Evaluating classification models
+
