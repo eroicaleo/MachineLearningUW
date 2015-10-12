@@ -63,6 +63,7 @@ But eventually, I give up because it can only be installed on 64-bit machine.
 
 **Basic command**
 
+`import graphlab`, `graphlab.SFrame("filename")`
 `sf.head()`, `sf.tail()`
 
 Canvas command: `sf.show()` is mad cool!
@@ -138,7 +139,7 @@ output $y$ can have more than 2 categories.
     * how do we get list of +/- words?
     * Words have different degree of sentiments.
     * single words are not enough: good and not good.
-    
+
 * A linear classifier will learn a weight for each word.
 
 **simple linear classifier**
@@ -150,3 +151,16 @@ if score(x) > 0, then positive. Otherwise negative.
 
 ## Evaluating classification models
 
+error = (# of mistakes) / total # of sentence
+
+Is there class imbalance, how does it compare to random guess and majority vote?
+
+ False positive, false negative
+
+ ### Learning curve
+
+ Even with infinite data, the test error won't be 0, which is called bias of model
+
+ Complex model has less bias, but needs more training data.
+
+ How confident is your prediction. (P(y|x)) 
