@@ -157,10 +157,121 @@ Is there class imbalance, how does it compare to random guess and majority vote?
 
  False positive, false negative
 
- ### Learning curve
+### Learning curve
 
- Even with infinite data, the test error won't be 0, which is called bias of model
+Even with infinite data, the test error won't be 0, which is called bias of model
 
- Complex model has less bias, but needs more training data.
+Complex model has less bias, but needs more training data.
 
- How confident is your prediction. (P(y|x)) 
+How confident is your prediction. (P(y|x)) 
+
+# Week 4 Clustering and Similarity: Retrieving Documents
+# Week 4.1 Algorithms for retrieval and measuring similarity of documents
+         
+Group related clusters.
+
+## What is document retrieve task?
+
+**Document Retrieval**
+
+* Currently reading article you like
+* Automatically retrieve articles might be of interest to you
+
+**Challenges**
+
+* How do we measure similarity?
+* How do we search over articles?
+
+## Word count representation for measuring similarity
+
+* Bag of words model
+    * Ignore order of words
+    * Count # of instances of each word in vocabulary
+
+"Carlos calls the sport futbol. Emily calls the sport soccer."
+
+* Build a very long sparse vector that counts the No. of words
+  that we see in this document.
+
+**Measuring similarity**
+
+* Do the inner product (elementwise product) of 2 word count vectors.
+
+**Issue with word counts - Doc length**
+
+* If we double the document, the similarity will be 4X.
+* Bias is very strong towards long document.
+
+**Solution = normalize**
+
+* normalized vector = $\frac{v}{\begin{Vmatrix}v\end{Vmatrix}}$
+
+## Prioritizing important words with tf-idf
+
+* We really want to emphasize the important words in a document.
+
+**Issues with word counts - Rare words**
+
+* Common words in doc: "the", "player", "field", "goal".
+* Dominate rare words like: "futbol", "Messi".
+    * Those often are the ones that are really relevent in describing
+      what is unique about this article
+
+**Document Frequency**
+
+* Rare words: appears infrequent in the corpus.
+* Emphasize words appearing in few docs.
+* Discount word $w$ based on # of docs containing $w$ in corpus.
+
+**Important words**
+
+* What characterize an important word?
+    * Appears frequently in doc (common locally)
+    * Appears rarely in corpus (rare globally)
+* Important words is some trade-off between local frequency and global rarity.
+
+## Calculating tf-idf vectors
+
+* Term frequency - inverse document frequency.
+* Term frequency: same as word count vector
+* Inverse document frequency:
+
+$$
+log \frac{\text{# docs}}{1 + #docs using word}
+$$
+
+* For frequent words, the idf $\approx 0$
+    * very very strong downweighting
+* For rare words, the idf is large/small/non-zero.
+* Then we multiply tf and idf together.
+
+## Retrieving similar documents using nearest neighbor search
+
+* Need to specify distance metric.
+
+**1 Nearest neighbor**
+
+* input query article
+* output: most similar article
+* Algorithm: linear search
+
+**1 Nearest neighbor**
+
+* input query article
+* output: list of k similar articles
+* Algorithm: Priority Queue
+
+# Week 4.2 Clustering models and algorithms
+
+## Clustering documents task overview
+
+**Structure documents by topic**
+
+* Goal: discover groups (clusters) of related articles.
+* Training set of labeled docs.
+* Multiclass classification problem
+    * Have a bunch of labels
+    * Want to classify which class an article belongs to
+* Supervised learning problem.
+
+## Clustering documents: An unsupervised learning task
