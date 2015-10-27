@@ -163,11 +163,11 @@ Even with infinite data, the test error won't be 0, which is called bias of mode
 
 Complex model has less bias, but needs more training data.
 
-How confident is your prediction. (P(y|x)) 
+How confident is your prediction. (P(y|x))
 
 # Week 4 Clustering and Similarity: Retrieving Documents
 # Week 4.1 Algorithms for retrieval and measuring similarity of documents
-         
+
 Group related clusters.
 
 ## What is document retrieve task?
@@ -275,3 +275,46 @@ $$
 * Supervised learning problem.
 
 ## Clustering documents: An unsupervised learning task
+
+**Clustering**
+
+* No labels are provided
+* Want to uncover cluster structure
+* Input: docs as vectors
+* Output: cluster labels
+* We are going to associate some class label with the document.
+
+**What defines a cluster**
+
+* Cluster defined by center and shape/spread
+* Assign obeservation (doc) to cluster (topic label)
+    * score under cluster is higher than others
+    * Often, just more similar to assigned cluster center than other cluster
+    centers
+
+## k-means: A clustering algorithm
+
+**k-means**
+
+0. Initialize cluster centers
+1. Assign observations to closest cluster center
+2. Revise cluster centers as mean of assigned observations
+3. Repeat 1 + 2 until convergence.
+
+## Other examples of clustering
+
+* Clustering images
+* Group patients by medical condition
+* Products on Amazon
+    * Discover product categories from purchase history
+    * Discover groups of users
+* Structuring web search results
+    * Search term can have multiple meanings
+    * Example: "cardinal"
+* Discovering similar neighborhoods
+    * Task1: Estimate price at a small regional level
+    * Challenge: only a few sales in each region per month
+    * Solution: cluster regions with similar trends and share information within
+      a cluster
+    * Task2: Forecast violent crimes to better task police
+    * Again cluster regions and share information
