@@ -318,3 +318,13 @@ $$
       a cluster
     * Task2: Forecast violent crimes to better task police
     * Again cluster regions and share information
+
+# Week 4.3 Summary of clustering and similarity
+
+## Clustering and similarity ML block diagram
+
+* Training data: document id, document text table
+* Feature extraction: tf-idf representation
+* Machine learning model: clustering, output $\hat{y}$ is estimated cluster label.
+* ML Algorithm: k-means clustering, output $\hat{w}$ cluster centers
+* Quality Measure: distances to cluster centers
