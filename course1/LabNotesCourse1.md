@@ -73,3 +73,52 @@ giraffe_reviews['predicted_sentiment'] = sentiment_model.predict(giraffe_reviews
 giraffe_reviews = giraffe_reviews.sort('predicted_sentiment', ascending=False)
 giraffe_reviews[-1]['review']
 ```
+
+# Week 4 Lab
+
+## Find the length of a SFrame
+
+```python
+len(people)
+```
+
+## Select specific people
+
+```python
+obama = people[people['name'] == 'Barack Obama']
+clooney = people[people['name'] == 'George Clooney']
+clooney['text']
+```
+
+## Get the word counts for Obama article
+
+```python
+obama['word_count'] = graphlab.text_analytics.count_words(obama['text'])
+```
+
+## Sort the word counts for the Obama article
+
+```python
+# Make it looks better
+# Note that the [[]]
+# >>> type(obama[['word_count']])
+# graphlab.data_structures.sframe.SFrame
+# >>> type(obama['word_count'])
+# graphlab.data_structures.sarray.SArray
+obama_word_count_table = obama[['word_count']].stack('word_count', new_column_name = ['word', 'count'])
+
+obama_word_count_table.sort('count', ascending=False)
+```
+
+## Compute TF-IDF for the corpus
+
+```python
+# word count for all people
+people['word_count'] = graphlab.text_analytics.count_words(people['text'])
+tfidf = graphlab.text_analytics.tf_idf(people['word_count'])
+people['tfidf'] = tfidf['docs']
+
+## Examine the TF-IDF for the Obama article
+obama = people[people['name'] == 'Barack Obama']
+obama[['tfidf']].stack('tfidf', new_column_name = ['word', 'tfidf']).sort('tfidf', ascending=False)
+```
