@@ -122,3 +122,17 @@ people['tfidf'] = tfidf['docs']
 obama = people[people['name'] == 'Barack Obama']
 obama[['tfidf']].stack('tfidf', new_column_name = ['word', 'tfidf']).sort('tfidf', ascending=False)
 ```
+
+## Manually compute distances between a few people
+
+```python
+graphlab.distances.cosine(obama['tfidf'][0], clinton['tfidf'][0])
+graphlab.distances.cosine(obama['tfidf'][0], beckham['tfidf'][0])
+```
+
+## Build a nearest neighbor model for document retrieval
+
+```python
+knn_model = graphlab.nearest_neighbors.create(people, features=['tfidf'], label='name')
+knn_model.query(obama)
+```
