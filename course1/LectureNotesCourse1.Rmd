@@ -328,3 +328,248 @@ $$
 * Machine learning model: clustering, output $\hat{y}$ is estimated cluster label.
 * ML Algorithm: k-means clustering, output $\hat{w}$ cluster centers
 * Quality Measure: distances to cluster centers
+
+# Week 5
+
+## Recommender System
+
+**Recommender systems overview**
+
+* Amazon, Netfix
+
+**Where we see recommender systems in action**
+
+* Personalization is transforming our experience of the world
+    * information overload
+    * Browsing is "history"
+* Movie recommendations: connect users with movies they may want to watch
+* Product recommendations
+    * Recommendations combine global & session interests
+* Music recommendations
+* Friend recommendations
+    * Users and "items" are of the same "type"
+* Drug-target Interactions
+    * What drug should we "repurpose" for some disease?
+        * It takes long time to get approval for new drugs
+        * It's lot easier to apply a drug that is already well studied to new condition.
+
+**Building a recommender system via classification**
+
+* Solution 0: Popularity
+    * What are people viewing now? Rank by global popularity
+    * Limitation: No personalization at all
+* Solution 1: Classification model
+    * What's the probability I'll by this product?
+    * Shove user info/purchase info/product info/other info to classifier and get
+      an yes or no, just like we did in classification model.
+    * Pros:
+        * Personalized: consider user info and purchase history
+        * Feature can capture context: time of the day, what I just saw
+        * Even handles limited user history: age of user ...
+    * Cons:
+        * Features many not be available: not known age/gender
+        * Often dosen't perform as well as collaborative filtering.
+
+## Co-occurrence matrices for collaborative filtering
+
+**Collaborative filtering: People who bought this also bought...**
+
+Leverage what other people have purchased and other links between users and items.
+
+* Solution 2: People bought this also bought ...
+
+**Co-occurrence matrix**
+
+* People who bought diapers also bought baby wipes
+
+* Matrix $C$: each entry stores # users who bought both items i & j
+* Symmetric: # of purchasing i & j same as # for j & i $C_{ij} = C_{ji}$
+* Keep incrementing the matrix while we are searching over users.
+
+**Making recommendations using co-occurrences**
+
+* User Shannon purchased diapers
+
+1. Look at diapers row of matrix
+2. Recommend other items with large counts
+    * baby wipes, milk, baby food
+
+**co-occurrence matrix must be normalized**
+
+* What if there are very popular items?
+    * popular baby item: Pampers Swaddlers diapers
+    * For any baby item (e.g. i = Sophie giraffe) large count $C_{ij}$ for j =
+      Pampers Swaddlers
+* Results
+    * Drowns out other effects
+    * Recommend based on popularity
+
+**Normalize co-occurrences: Similarity matrix**
+
+* Jaccard similarity: normalizes by popularity
+    * Who purchased *i* and *j* divided by who purchased *i* or *j*.
+* Many other similarity metric possible, e.g. *cosine similarity*
+
+**Limitations**
+
+* Only current page matters, no history
+    * Recommend similar items to the one you bought
+* What if you purchased many items?
+    * Want recommendations based on purchase history
+
+**Weighted average of purchased items**
+
+* User Shannon bought items {diapers, milk}
+    * Compute user-specific score for each item *j* in inventory by combining
+      similarities
+    * Score(Shannon, baby wipes) = 1/2 (S_{baby wipes, diapers} + S_{baby wipes, milk})
+        * looking at the co-occurrence matrix
+    * could also weight recent purchase more
+* Sort score(shannon, *j*) and find the item *j* with highest similarity.
+
+**Limitations**
+
+* Do not utilize:
+    * context (e.g. time of day)
+    * user features (e.g. age)
+    * product features (e.g. baby vs electronics)
+* cold start problem
+    * What if a new user or product arrives?
+
+## Matrix factorization
+
+**Movie recommendations**
+
+* User watch movies and rate them.
+* Each user only watches some movies.
+
+**Matrix completion problem**
+
+* Data: Users score some movies
+    * Rating(u, v) known ratings for black cells
+    * Rating(u, v) unknown ratings for white cells
+    * The matrix is very very sparse.
+* Filling missing data?
+
+**Suppose we had d topics for each user and movie**
+
+* Describe movie *v* with topic $R_v$
+    * How much is it action, romance, drama
+    * E.g. 'shawshank redemption' vector is [action = 0.3, romance = 0.01, drama = 1.5, ...]
+* Describe user *u* with topic $L_{u}$
+    * How much she likes action, romance, drama
+* $\widehat{\text{Rating}}(u, v)$ is the product of the two vectors.
+* Recommendations: sort movies user hasn't watched by $\widehat{\text{Rating}}(u, v)$.
+
+**Predictions in matrix form**
+
+* $\widehat{\text{Rating}}(u, v) = L_{u}^T * R_{v}$
+* $\widehat{\text{Rating}} = L \times R^T$
+* But we don't know topics of users and movies
+
+**Matrix factorization model: Discovering topics from data**
+
+* Only use observed values to estimate "topics" vectors $\widehat{L_u}$ and $\widehat{R_v}$
+* Use estimated $\widehat{L_u}$ and $\widehat{R_v}$ for recommendations
+* $RSS(L, R) = \begin{Vmatrix} L \times R^T - \text{Rating} \end{Vmatrix}^2$ for
+  $(u, v)$ pairs where Rating$(u, v)$ is available.
+* Many efficient algorithms for factorization.
+
+**Limitations of matrix factorization**
+
+* Cold-start problem
+    * This model still cannot handle a new user and a new movie.
+
+**Bring it all together: Featurized matrix factorization**
+
+**Combining features and discovered topics**
+
+* Features capture context
+    * Time of day, what I just saw, user info, past purchases
+* Discovered topics from matrix factorization capture *groups of users* who behave
+  similarly
+    * Women from Seattle who teach and have a baby
+
+* Combine to mitigate cold-start problem
+    * Ratings for a new user from *features* only
+    * As more information about user is discovered, matrix factorization *topics*
+      become more relevant
+
+**Blending models**
+
+* Squeezing last bit of accuracy by blending models
+* Netflix Prize 2006-2009
+    * 100M ratings
+    * 17770 movies
+    * 480189 users
+    * Predict 3 million ratings to highest accuracy.
+
+## Performance metrics for recommender systems
+
+**Why not use classification accuracy**
+
+* Classification accuracy = fraction of items correctly classified (like vs. not like)
+    * Because there are too many products out there, we just need to predict the
+      user does not like anything, and we can get very high prediction accuracy.
+
+* Here, we are not interested in what a person *does not like*
+* Rather, how quickly can we discover the relative few liked items?
+    * (Partially) an imbalanced class problem
+    * It cost much more if we predict a product the user is going to like it, but
+      actually he is not than we just miss some product the user like it.
+
+**How many liked items were recommended**
+
+$$
+\text{Recall} = \frac{\text{no. liked & shown}}{\text{no. liked}}
+$$
+
+**How many recommended items were liked?**
+
+* How much garbage do I have to look at compared to the number of items that I like.
+  How much I am gonna be wasting my efforts.
+
+$$
+\text{Precision} = \frac{\text{No. liked & shown}}{\text{No. shown}}
+$$
+
+**Maximize recall: Recommend everything**
+
+* Recommend everything
+* But what about resulting precision? very small!
+
+**Optimal recommender**
+
+* Only recommend I like, both recall and precision are one.
+
+**Precision-recall curve**
+
+* Input: A specific recommender system
+* Output: Algorithm-specific precision-recall curve.
+
+* To draw curve, vary threshold on # items recommended.
+    * For each setting, calculate the precision and recall
+
+**Which Algorithm is Best?**
+
+* For a given precision, want recall as large as possible (or vice versa)
+* One metric: largest area under the curve (AUC)
+* Another: set desired recall and maximize precision (precision at k)
+    * We know how many items we can display, e.g. 10, or we know users are only gonna
+      look at 20 items, so we want to limit items shown to be 20.
+
+## Recommender system ML block diagram
+
+* Training data: user, product, rating table.
+* Feature extraction: x = (user id, product id), $\hat{y}$ = predicted rating
+* ML model: matrix factorization, $\hat{w} = \{ \hat{L}_u, \hat{R}_v \}$
+* Feature extraction for Featurized matrix factorization:
+  x = (user id, product id, age, gender, product description)
+* ML model: Featurized matrix factorization, $\hat{w} = \{ \hat{L}_u, \hat{R}_v, \hat{w}_0 \}$
+* Quality metric
+    * RSS between $y$ and $\hat{y}$
+
+**What you can do now**
+
+* Gift recommendations
+* Song recommendations
