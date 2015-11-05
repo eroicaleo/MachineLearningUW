@@ -136,3 +136,51 @@ graphlab.distances.cosine(obama['tfidf'][0], beckham['tfidf'][0])
 knn_model = graphlab.nearest_neighbors.create(people, features=['tfidf'], label='name')
 knn_model.query(obama)
 ```
+
+# Week 5
+
+## Set the canvas to notebook
+
+```python
+graphlab.canvas.set_target('ipynb')
+# Show the bar chart
+song_data['song'].show()
+```
+
+## Count the unique users
+
+```python
+users = song_data['user_id'].unique()
+len(users)
+```
+
+## Create a song recommender
+```python
+train_data, test_data = song_data.random_split(.8, seed=0)
+```
+
+### Simple popularity-based recommender
+
+```python
+# Training
+popularity_model = graphlab.popularity_recommender.create(train_data,
+                                                         user_id='user_id',
+                                                         item_id='song')
+# Prediction
+popularity_model.recommend(users=[users[0]])
+```
+
+### Build a song recommender with personalization
+
+```python
+# Training
+personalized_mode = graphlab.item_similarity_recommender.create(train_data,
+                                                               user_id='user_id',
+                                                               item_id='song')
+# Applying the personalized model to make song recommendation
+personalized_mode.recommend(users=[users[0]])
+
+# Get similar items
+personalized_mode.get_similar_items(['With Or Without You - U2'])
+personalized_mode.get_similar_items(['Chan Chan (Live) - Buena Vista Social Club'])
+```
