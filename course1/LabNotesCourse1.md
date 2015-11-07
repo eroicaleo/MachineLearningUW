@@ -184,3 +184,26 @@ personalized_mode.recommend(users=[users[0]])
 personalized_mode.get_similar_items(['With Or Without You - U2'])
 personalized_mode.get_similar_items(['Chan Chan (Live) - Buena Vista Social Club'])
 ```
+
+### Quantitative comparison between the models
+
+```python
+%matplotlib inline
+model_performance = graphlab.recommender.util.compare_models(test_data,
+                                                            [popularity_model, personalized_mode],
+                                                            user_sample=0.05)
+```
+
+### Sort the artist by their popularity (total number of songs played)
+
+```python
+song_data.groupby(key_columns='artist', operations=
+{'total_count': graphlab.aggregate.SUM('listen_count')}).sort('total_count',
+ascending=False)
+```
+
+### Sort the song by their popularity (total number of songs recommended)
+```python
+recommendations.groupby(key_columns='song',
+operations={'count': graphlab.aggregate.COUNT()}).sort('count', ascending=False)
+```
