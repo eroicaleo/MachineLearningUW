@@ -573,3 +573,64 @@ $$
 
 * Gift recommendations
 * Song recommendations
+
+# Week 6 Deep Learning: Searching for Images
+
+The lecture slide can be found [here](https://d396qusza40orc.cloudfront.net/phoenixassets/ml-foundations/deeplearning-annotated.pdf)
+
+## Neural networks: Learning very non-linear features
+
+**visual product recommender**
+
+**Image Classification**
+
+Input $X$: pixels
+
+Neural networks: Learning *very* non-linear features.
+
+Linear classifiers
+
+$$
+\text{score}(x) = w_0 + w_1x_1 + \dots + w_dx_d
+$$
+
+$x_1 \text{ OR } x_2 = -0.5 \times 1 + 1 \times x_1 + 1 \times x_2$
+
+$x_1 \text{ AND } x_2 = -1.5 \times 1 + 1 \times x_1 + 1 \times x_2$
+
+But the linear classifier can't represent XOR, which is the counterexample for
+everything
+
+We can solve the XOR problem by adding a layer.
+
+**Neural Network**
+
+* Many layers of linear models and non-linear transformation
+* Around for about 50 years
+* Big resurgence in the last few years
+    * Impressive accuracy on several benchmark problems
+    * Powered by huge datasets, GPUs & modeling/learning algorithm improvements
+
+## Deep learning & deep features
+
+**Image Features**
+
+* Features = local detector
+    * combine to make prediction.
+    * in reality, features are more low-level
+    * E.g., we can see nose/eye/eye/mouth in the picture, we can tell it's a
+      face.
+* Typically local detectors look for locally "interesting points" in the image
+* Image features: collections of locally interesting points
+    * Combine to build classifiers
+
+**Standard image classification approach**
+
+* Input -> Extract features -> Use simple classifier (e.g. logistic regression, SVMs)
+* However, hand created features are very painful to design.
+
+**Deep learning**
+
+* Implicitly learns features
+* Neural network capture different types of image features at different layers
+  and get learned automatically.
