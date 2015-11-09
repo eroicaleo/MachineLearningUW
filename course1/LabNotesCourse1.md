@@ -207,3 +207,49 @@ ascending=False)
 recommendations.groupby(key_columns='song',
 operations={'count': graphlab.aggregate.COUNT()}).sort('count', ascending=False)
 ```
+
+# Week 6 Lab
+
+## Train/test a classifier on the raw image pixels
+
+```python
+raw_pixel_model = graphlab.logistic_classifier.create(image_train, target='label',
+                                                     features=['image_array'])
+raw_pixel_model.predict(image_test[0:3])
+raw_pixel_model.evaluate(image_test)
+```
+
+## Load deep feature model and convert data set raw features to deep features
+
+```python
+deep_learning_model = graphlab.load_model('imagenet_model')
+image_train['deep_features'] = deep_learning_model.extract_features(image_train)
+```
+
+## Use the deep features with logistic regression
+
+```python
+deep_feature_model = graphlab.logistic_classifier.create(image_train,
+target='label', features=['deep_features'])
+deep_feature_model.predict(image_test[0:3])
+deep_feature_model.evaluate(image_test)
+```
+
+## Use the deep features with knn
+
+```python
+knn_model = graphlab.nearest_neighbors.create(image_train, features=['deep_features'], label='id')
+# Note here, we have to use [18:19] to return a SFrame object.
+cat = image_train[18:19]
+knn_model.query(cat)
+# Note the filter_by function
+def get_images_from_ids(query_result):
+    return image_train.filter_by(query_result['reference_label'], 'id')
+cat_neighbors = get_images_from_ids(knn_model.query(cat))
+cat_neighbors['image'].show()
+car = image_train[8:9]
+get_images_from_ids(knn_model.query(car))['image'].show()
+# Define a lambda to make show easier
+show_neighbors = lambda i: get_images_from_ids(knn_model.query(image_train[i:i+1]))['image'].show()
+show_neighbors(8)
+```
