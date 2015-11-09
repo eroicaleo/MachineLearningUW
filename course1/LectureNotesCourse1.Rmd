@@ -634,3 +634,93 @@ We can solve the XOR problem by adding a layer.
 * Implicitly learns features
 * Neural network capture different types of image features at different layers
   and get learned automatically.
+
+**Deep Learning Performance**
+
+* Sample results using deep neural networks
+    * German traffic sign recognition benchmark.
+    * 99.5% accuracy
+* House number recognition
+    * 97.8% accuracy per character
+
+* ImageNet 2012 competition: 1.2M training images, 1000 categories.
+    * ISI and OXFORD_VGG use hand-coded features like SIFT.
+    * SuperVision uses deep neural network and achieves huge gain.
+        * 8 layers, 60M parameters, new training algorithm and GPU implementation.
+
+**Demo of deep learning model on ImageNet data**
+
+[herohuapp](http://phototag.herokuapp.com/)
+
+**Other examples of deep learning in computer vision**
+
+* Scene parsing with deep learning
+* Retrieve similar image, core concept
+
+| Input image | Nearest neighbors |
+| :------------- | :------------- |
+| Shoes | Shoes |
+| Boots | Boots |
+| Stilts | Stilts |
+
+**deep learning pros**
+
+* Enables learning of features rather than hand tuning
+* Impressive performance gain
+    * Computer vision
+    * Speech recognition
+    * Some text analysis
+* Potential more impact
+
+**Deep Learning Flow**
+
+* Starts from "lots of labeled data", which needs human to label them.
+* Split to "training data" and "validation data"
+* Learn deep neural network and validate
+
+**Many tricks needed to work well**
+
+* different types of layers, connections, needed for accuracy.
+
+**deep learning cons**
+
+* Requires lots of data for high accuracy.
+* Computational really expensive
+* Extreme hard to tune
+    * Choice of architecture
+    * Parameter types
+    * Hyper-parameters
+    * Learning algorithm
+
+Computational cost + so many choices = incredibly hard to tune.
+
+**Deep Features: transfer learning**
+
+Can we learn features even we don't have data or time?
+
+* Transfer learning: use data from one task to help learn on another
+    * Lots of cat and dog image -> learn neural network -> great accuracy on cat
+      and dog
+    * If we have a little big data of other image: chairs/elephant -> neural
+      network as feature extractor + simple classifier -> great accuracy on 101
+      tasks
+
+* What's learned in neural network
+    * The last 2 stages focus on task 1: classify cats and dogs
+    * The middle layers are more generic and can be used as feature extractor.
+* For task 2, predicting 101 categories.
+* Transfer learning with deep features workflow
+    * Some label data
+    * Extract features with neural network trained on different task
+    * Training set learn simple classifier
+* How general are deep features?
+    *  A company called compology: put camera in trash can.
+
+**Deep learning ML block diagram**
+
+* Training data is (image, label)
+* Feature extraction outputs 'deep features' $x$.
+* Feed deep features to ML model like logistic regression.
+* output is predicted labels.
+* Fit predicted labels $\hat{y}$ and true labels $y$
+* The quality metric is classification accuracy.
