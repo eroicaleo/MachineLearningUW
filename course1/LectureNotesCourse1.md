@@ -1,0 +1,579 @@
+# LectureNotesCourse1: Machine Learning Foundations: A Case Study Approach
+Yang Ge  
+September 29, 2015  
+
+# Week1
+
+## Getting started with Python and the IPython Notebook
+
+To install ipython note book on my Ubuntu 15.04, I followed link
+[here](http://askubuntu.com/questions/554129/problem-with-installing-ipython-on-ubuntu-14-04-lts)
+and discussion forum thread "Hints to install Ipython notebook on Ubuntu 14.04"
+[here](https://www.coursera.org/learn/ml-foundations/module/jw04R/discussions/0NmDpWOZEeWNhRIQkbjhXw)
+
+```bash
+$ sudo apt-get install ipython ipython-notebook
+# If you want to use python 3, I guess you could do
+# sudo apt-get install ipython3 ipython3-notebook
+
+# I also need to do this step:
+$ sudo easy_install jsonschema
+
+# To start it
+$ ipython notebook
+```
+
+Python plus wiki pages is **_IPython notebook_**.
+
+* To create new notebook, click "New" -> "Python 2".
+* To change the cell from "code" to "markdown", click "Cell" -> "Celltype" -> "Markdown".
+Or use the hotkey `ctrl-m m`
+* To run the current code block: "Ctrl"+"Enter". To run and create new: "SHIFT"+"Enter".
+
+According to a recent survey "python is the language for data science".
+
+## Getting started with GraphLab Create
+
+To install the GraphLab Create in my Ubuntu 15.04:
+
+```base
+# Install the virtualenv
+$ sudo apt-get install python-virtualenv
+
+# Create a virtual environment named e.g. dato-env
+$ virtualenv dato-env
+
+# Activate the virtual environment
+$ source dato-env/bin/activate
+
+# Make sure pip is up to date
+$ pip install --upgrade pip
+
+# Install your licensed copy of GraphLab Create
+pip install --upgrade --no-cache-dir https://get.dato.com/GraphLab-Create/1.6.1/<email>/<product_key>/GraphLab-Create-License.tar.gz
+```
+
+But eventually, I give up because it can only be installed on 64-bit machine.
+
+**Basic command**
+
+`import graphlab`, `graphlab.SFrame("filename")`
+`sf.head()`, `sf.tail()`
+
+Canvas command: `sf.show()` is mad cool!
+
+It opens in new tab in the browser, we can also do this:
+```python
+graphlab.canvas.set_target('ipynb')
+sf['age'].show(view='Categorical')
+```
+
+**Interacting with columns in SFrame**
+```python
+sf['Country']
+sf['age'].mean()
+sf['Full Name'] = sf['First Name'] + sf['Last Name']
+sf['age'] * sf['age']
+```
+
+**Using .apply() for data transformation**
+
+```python
+sf['Country'].apply(transform_country)
+```
+
+# Week 2
+
+Predict house price by similar houses.
+The problem is that we throw out the info of all other houses.
+We would like to leverage all the information we can to come up with good
+predictions.
+
+## Linear regression modeling
+
+$$
+f(x) = w_0 + w_1 x
+$$
+
+$w_0$ is intercept and $w_1$ is slope.
+Redidual sum of squares (*RSS*).
+Best model is called $\hat{w} = (\hat{w_0}, \hat{w_1})$
+
+## Adding higer order effects
+
+$$
+f(x) = w_0 + w_1 x + w_2 x^2
+$$
+
+If we go higer, like 13 order, we might overfit the data.
+
+## Evaluating regression models
+
+We want a model generalized well for new data.
+
+pipeline:
+
+Training data -> feature extraction -> ML model
+
+# Week 3 Classification modeling
+
+Input is sentence from review, it goes to "classifier model", output is predicted class.
+output $y$ can have more than 2 categories.
+
+* Resteraut review
+* Another example is spam filtering, input is "text of email, IP, sender"
+* Image classification, different kinds of dogs.
+* Personalized medical diagnosis
+* Reading mind, take a image of brain
+
+## Linear classifier
+
+* Simple threshold classifier: Count positive and negative word in a sentence.
+* Limitation:
+    * how do we get list of +/- words?
+    * Words have different degree of sentiments.
+    * single words are not enough: good and not good.
+
+* A linear classifier will learn a weight for each word.
+
+**simple linear classifier**
+
+score(x) = Weighted count of words in sentence.
+if score(x) > 0, then positive. Otherwise negative.
+
+**Decision boundaries**
+
+## Evaluating classification models
+
+error = (# of mistakes) / total # of sentence
+
+Is there class imbalance, how does it compare to random guess and majority vote?
+
+ False positive, false negative
+
+### Learning curve
+
+Even with infinite data, the test error won't be 0, which is called bias of model
+
+Complex model has less bias, but needs more training data.
+
+How confident is your prediction. (P(y|x))
+
+# Week 4 Clustering and Similarity: Retrieving Documents
+# Week 4.1 Algorithms for retrieval and measuring similarity of documents
+
+Group related clusters.
+
+## What is document retrieve task?
+
+**Document Retrieval**
+
+* Currently reading article you like
+* Automatically retrieve articles might be of interest to you
+
+**Challenges**
+
+* How do we measure similarity?
+* How do we search over articles?
+
+## Word count representation for measuring similarity
+
+* Bag of words model
+    * Ignore order of words
+    * Count # of instances of each word in vocabulary
+
+"Carlos calls the sport futbol. Emily calls the sport soccer."
+
+* Build a very long sparse vector that counts the No. of words
+  that we see in this document.
+
+**Measuring similarity**
+
+* Do the inner product (elementwise product) of 2 word count vectors.
+
+**Issue with word counts - Doc length**
+
+* If we double the document, the similarity will be 4X.
+* Bias is very strong towards long document.
+
+**Solution = normalize**
+
+* normalized vector = $\frac{v}{\begin{Vmatrix}v\end{Vmatrix}}$
+
+## Prioritizing important words with tf-idf
+
+* We really want to emphasize the important words in a document.
+
+**Issues with word counts - Rare words**
+
+* Common words in doc: "the", "player", "field", "goal".
+* Dominate rare words like: "futbol", "Messi".
+    * Those often are the ones that are really relevent in describing
+      what is unique about this article
+
+**Document Frequency**
+
+* Rare words: appears infrequent in the corpus.
+* Emphasize words appearing in few docs.
+* Discount word $w$ based on # of docs containing $w$ in corpus.
+
+**Important words**
+
+* What characterize an important word?
+    * Appears frequently in doc (common locally)
+    * Appears rarely in corpus (rare globally)
+* Important words is some trade-off between local frequency and global rarity.
+
+## Calculating tf-idf vectors
+
+* Term frequency - inverse document frequency.
+* Term frequency: same as word count vector
+* Inverse document frequency:
+
+$$
+log \frac{\text{# docs}}{1 + #docs using word}
+$$
+
+* For frequent words, the idf $\approx 0$
+    * very very strong downweighting
+* For rare words, the idf is large/small/non-zero.
+* Then we multiply tf and idf together.
+
+## Retrieving similar documents using nearest neighbor search
+
+* Need to specify distance metric.
+
+**1 Nearest neighbor**
+
+* input query article
+* output: most similar article
+* Algorithm: linear search
+
+**1 Nearest neighbor**
+
+* input query article
+* output: list of k similar articles
+* Algorithm: Priority Queue
+
+# Week 4.2 Clustering models and algorithms
+
+## Clustering documents task overview
+
+**Structure documents by topic**
+
+* Goal: discover groups (clusters) of related articles.
+* Training set of labeled docs.
+* Multiclass classification problem
+    * Have a bunch of labels
+    * Want to classify which class an article belongs to
+* Supervised learning problem.
+
+## Clustering documents: An unsupervised learning task
+
+**Clustering**
+
+* No labels are provided
+* Want to uncover cluster structure
+* Input: docs as vectors
+* Output: cluster labels
+* We are going to associate some class label with the document.
+
+**What defines a cluster**
+
+* Cluster defined by center and shape/spread
+* Assign obeservation (doc) to cluster (topic label)
+    * score under cluster is higher than others
+    * Often, just more similar to assigned cluster center than other cluster
+    centers
+
+## k-means: A clustering algorithm
+
+**k-means**
+
+0. Initialize cluster centers
+1. Assign observations to closest cluster center
+2. Revise cluster centers as mean of assigned observations
+3. Repeat 1 + 2 until convergence.
+
+## Other examples of clustering
+
+* Clustering images
+* Group patients by medical condition
+* Products on Amazon
+    * Discover product categories from purchase history
+    * Discover groups of users
+* Structuring web search results
+    * Search term can have multiple meanings
+    * Example: "cardinal"
+* Discovering similar neighborhoods
+    * Task1: Estimate price at a small regional level
+    * Challenge: only a few sales in each region per month
+    * Solution: cluster regions with similar trends and share information within
+      a cluster
+    * Task2: Forecast violent crimes to better task police
+    * Again cluster regions and share information
+
+# Week 4.3 Summary of clustering and similarity
+
+## Clustering and similarity ML block diagram
+
+* Training data: document id, document text table
+* Feature extraction: tf-idf representation
+* Machine learning model: clustering, output $\hat{y}$ is estimated cluster label.
+* ML Algorithm: k-means clustering, output $\hat{w}$ cluster centers
+* Quality Measure: distances to cluster centers
+
+# Week 5
+
+## Recommender System
+
+**Recommender systems overview**
+
+* Amazon, Netfix
+
+**Where we see recommender systems in action**
+
+* Personalization is transforming our experience of the world
+    * information overload
+    * Browsing is "history"
+* Movie recommendations: connect users with movies they may want to watch
+* Product recommendations
+    * Recommendations combine global & session interests
+* Music recommendations
+* Friend recommendations
+    * Users and "items" are of the same "type"
+* Drug-target Interactions
+    * What drug should we "repurpose" for some disease?
+        * It takes long time to get approval for new drugs
+        * It's lot easier to apply a drug that is already well studied to new condition.
+
+**Building a recommender system via classification**
+
+* Solution 0: Popularity
+    * What are people viewing now? Rank by global popularity
+    * Limitation: No personalization at all
+* Solution 1: Classification model
+    * What's the probability I'll by this product?
+    * Shove user info/purchase info/product info/other info to classifier and get
+      an yes or no, just like we did in classification model.
+    * Pros:
+        * Personalized: consider user info and purchase history
+        * Feature can capture context: time of the day, what I just saw
+        * Even handles limited user history: age of user ...
+    * Cons:
+        * Features many not be available: not known age/gender
+        * Often dosen't perform as well as collaborative filtering.
+
+## Co-occurrence matrices for collaborative filtering
+
+**Collaborative filtering: People who bought this also bought...**
+
+Leverage what other people have purchased and other links between users and items.
+
+* Solution 2: People bought this also bought ...
+
+**Co-occurrence matrix**
+
+* People who bought diapers also bought baby wipes
+
+* Matrix $C$: each entry stores # users who bought both items i & j
+* Symmetric: # of purchasing i & j same as # for j & i $C_{ij} = C_{ji}$
+* Keep incrementing the matrix while we are searching over users.
+
+**Making recommendations using co-occurrences**
+
+* User Shannon purchased diapers
+
+1. Look at diapers row of matrix
+2. Recommend other items with large counts
+    * baby wipes, milk, baby food
+
+**co-occurrence matrix must be normalized**
+
+* What if there are very popular items?
+    * popular baby item: Pampers Swaddlers diapers
+    * For any baby item (e.g. i = Sophie giraffe) large count $C_{ij}$ for j =
+      Pampers Swaddlers
+* Results
+    * Drowns out other effects
+    * Recommend based on popularity
+
+**Normalize co-occurrences: Similarity matrix**
+
+* Jaccard similarity: normalizes by popularity
+    * Who purchased *i* and *j* divided by who purchased *i* or *j*.
+* Many other similarity metric possible, e.g. *cosine similarity*
+
+**Limitations**
+
+* Only current page matters, no history
+    * Recommend similar items to the one you bought
+* What if you purchased many items?
+    * Want recommendations based on purchase history
+
+**Weighted average of purchased items**
+
+* User Shannon bought items {diapers, milk}
+    * Compute user-specific score for each item *j* in inventory by combining
+      similarities
+    * Score(Shannon, baby wipes) = 1/2 (S_{baby wipes, diapers} + S_{baby wipes, milk})
+        * looking at the co-occurrence matrix
+    * could also weight recent purchase more
+* Sort score(shannon, *j*) and find the item *j* with highest similarity.
+
+**Limitations**
+
+* Do not utilize:
+    * context (e.g. time of day)
+    * user features (e.g. age)
+    * product features (e.g. baby vs electronics)
+* cold start problem
+    * What if a new user or product arrives?
+
+## Matrix factorization
+
+**Movie recommendations**
+
+* User watch movies and rate them.
+* Each user only watches some movies.
+
+**Matrix completion problem**
+
+* Data: Users score some movies
+    * Rating(u, v) known ratings for black cells
+    * Rating(u, v) unknown ratings for white cells
+    * The matrix is very very sparse.
+* Filling missing data?
+
+**Suppose we had d topics for each user and movie**
+
+* Describe movie *v* with topic $R_v$
+    * How much is it action, romance, drama
+    * E.g. 'shawshank redemption' vector is [action = 0.3, romance = 0.01, drama = 1.5, ...]
+* Describe user *u* with topic $L_{u}$
+    * How much she likes action, romance, drama
+* $\widehat{\text{Rating}}(u, v)$ is the product of the two vectors.
+* Recommendations: sort movies user hasn't watched by $\widehat{\text{Rating}}(u, v)$.
+
+**Predictions in matrix form**
+
+* $\widehat{\text{Rating}}(u, v) = L_{u}^T * R_{v}$
+* $\widehat{\text{Rating}} = L \times R^T$
+* But we don't know topics of users and movies
+
+**Matrix factorization model: Discovering topics from data**
+
+* Only use observed values to estimate "topics" vectors $\widehat{L_u}$ and $\widehat{R_v}$
+* Use estimated $\widehat{L_u}$ and $\widehat{R_v}$ for recommendations
+* $RSS(L, R) = \begin{Vmatrix} L \times R^T - \text{Rating} \end{Vmatrix}^2$ for
+  $(u, v)$ pairs where Rating$(u, v)$ is available.
+* Many efficient algorithms for factorization.
+
+**Limitations of matrix factorization**
+
+* Cold-start problem
+    * This model still cannot handle a new user and a new movie.
+
+**Bring it all together: Featurized matrix factorization**
+
+**Combining features and discovered topics**
+
+* Features capture context
+    * Time of day, what I just saw, user info, past purchases
+* Discovered topics from matrix factorization capture *groups of users* who behave
+  similarly
+    * Women from Seattle who teach and have a baby
+
+* Combine to mitigate cold-start problem
+    * Ratings for a new user from *features* only
+    * As more information about user is discovered, matrix factorization *topics*
+      become more relevant
+
+**Blending models**
+
+* Squeezing last bit of accuracy by blending models
+* Netflix Prize 2006-2009
+    * 100M ratings
+    * 17770 movies
+    * 480189 users
+    * Predict 3 million ratings to highest accuracy.
+
+## Performance metrics for recommender systems
+
+**Why not use classification accuracy**
+
+* Classification accuracy = fraction of items correctly classified (like vs. not like)
+    * Because there are too many products out there, we just need to predict the
+      user does not like anything, and we can get very high prediction accuracy.
+
+* Here, we are not interested in what a person *does not like*
+* Rather, how quickly can we discover the relative few liked items?
+    * (Partially) an imbalanced class problem
+    * It cost much more if we predict a product the user is going to like it, but
+      actually he is not than we just miss some product the user like it.
+
+**How many liked items were recommended**
+
+$$
+\text{Recall} = \frac{\text{no. liked & shown}}{\text{no. liked}}
+$$
+
+**How many recommended items were liked?**
+
+* How much garbage do I have to look at compared to the number of items that I like.
+  How much I am gonna be wasting my efforts.
+
+$$
+\text{Precision} = \frac{\text{No. liked & shown}}{\text{No. shown}}
+$$
+
+**Maximize recall: Recommend everything**
+
+* Recommend everything
+* But what about resulting precision? very small!
+
+**Optimal recommender**
+
+* Only recommend I like, both recall and precision are one.
+
+**Precision-recall curve**
+
+* Input: A specific recommender system
+* Output: Algorithm-specific precision-recall curve.
+
+* To draw curve, vary threshold on # items recommended.
+    * For each setting, calculate the precision and recall
+
+**Which Algorithm is Best?**
+
+* For a given precision, want recall as large as possible (or vice versa)
+* One metric: largest area under the curve (AUC)
+* Another: set desired recall and maximize precision (precision at k)
+    * We know how many items we can display, e.g. 10, or we know users are only gonna
+      look at 20 items, so we want to limit items shown to be 20.
+
+## Recommender system ML block diagram
+
+* Training data: user, product, rating table.
+* Feature extraction: x = (user id, product id), $\hat{y}$ = predicted rating
+* ML model: matrix factorization, $\hat{w} = \{ \hat{L}_u, \hat{R}_v \}$
+* Feature extraction for Featurized matrix factorization:
+  x = (user id, product id, age, gender, product description)
+* ML model: Featurized matrix factorization, $\hat{w} = \{ \hat{L}_u, \hat{R}_v, \hat{w}_0 \}$
+* Quality metric
+    * RSS between $y$ and $\hat{y}$
+
+**What you can do now**
+
+* Gift recommendations
+* Song recommendations
+
+# Week 6 Deep Learning: Searching for Images
+
+The lecture slide can be found [here](https://d396qusza40orc.cloudfront.net/phoenixassets/ml-foundations/deeplearning-annotated.pdf)
+
+## Neural networks: Learning very non-linear features
+
+**visual product recommender**
+
+****
